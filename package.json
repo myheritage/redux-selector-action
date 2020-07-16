@@ -1,0 +1,26 @@
+{
+  "name": "redux-action-selector",
+  "version": "1.0.0",
+  "description": "Action selectors for Redux.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/myheritage/redux-action-selector.git"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "reselect",
+    "action",
+    "selector"
+  ],
+  "author": "Peri Levy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/myheritage/redux-action-selector/issues"
+  },
+  "homepage": "https://github.com/myheritage/redux-action-selector#readme"
+}
