@@ -5,24 +5,26 @@ const PLACEHOLDER = `${REDUX_ACTION_SELECTOR}/placeholder`;
 export const getPlaceholder = () => PLACEHOLDER;
 
 export function ReduxActionSelectorMiddleware(store) {
-	return next => action => {
-		const {type, payload, meta} = action;
+    return next => action => {
+        const {type, payload, meta} = action;
 		
-		if (type === REDUX_ACTION_SELECTOR && typeof meta === 'object' && typeof payload === 'function') {
+        if (type === REDUX_ACTION_SELECTOR) {
+            throwIfNotFunction(payload);
             const {selectors, args} = meta;
             const state = store.getState();
-            const computedSelectors = selectors.map(selector => typeof selector === 'function' ? selector(state) : selector);
+            const computedSelectors = selectors.map(selector => isFunction(selector) ? selector(state) : selector);
             const actionCreator = partial(payload, ...computedSelectors);
             store.dispatch(actionCreator(...args));
-		} else {
-			next(action);
-		}
-	}
+        } else {
+            next(action);
+        }
+    }
 }
 
 export function createActionSelector(...funcs) {
     const actionCreator = funcs.pop();
     const selectors = Array.isArray(funcs[0]) ? funcs[0] : funcs;
+    throwIfNotFunction(actionCreator);
 
     const actionSelector = (...args) => ({
         type: REDUX_ACTION_SELECTOR,
@@ -45,5 +47,16 @@ function partial(func, ...boundArgs) {
             .map(arg => arg === PLACEHOLDER ? args[argIndex++] : arg)
             .concat(args.slice(argIndex));
         func(...newArgs);
+    }
+}
+
+function isFunction(func) {
+    return typeof func === 'function';
+}
+
+function throwIfNotFunction(func) {
+    if (!isFunction(func)) {
+        throw new TypeError('Action selectors should be based on action creator of type function, ' +
+            `instead received the following type: [${typeof func}]`);
     }
 }
