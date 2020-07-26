@@ -3,12 +3,13 @@ const PLACEHOLDER = `${REDUX_ACTION_SELECTOR}/placeholder`;
 
 /**
  * A selector function which returns the "placeholder" constant
+ *
  * @returns {string} "placeholder" value
  */
 export const getPlaceholder = () => PLACEHOLDER;
 
 /**
- * A middlware which handles any action from type "redux-action-selector" in order to inject the store selectors output,
+ * A middleware which handles any action from type "redux-action-selector" in order to inject the store selectors output,
  * to the given action creator inside the handled action payload.
  * Afterwards, the middleware dispatch the new action with its injected args without passing them, but to calculate them against the store.
  * Otherwise calls next middleware and return its output.
@@ -48,7 +49,7 @@ export function reduxActionSelectorMiddleware(store) {
  * Each getPlaceholder saves the argument position for another outer argument.
  * Once we dispatch the new action, its args will fill all the placeholders by their position order.
  *
- * @param  {function[]} funcs - selectors and action creator
+ * @param  {...function} funcs - selectors and action creator
  * @returns {function} action selector
  */
 export function createActionSelector(...funcs) {
@@ -78,10 +79,10 @@ export function createActionSelector(...funcs) {
  *
  * @param {function} func - Function to bind its args
  * @param {array} boundArgs - The arguments we want to bind to the given function
- * @returns {function} - Bound function
+ * @returns {function} - partial function
  */
 function partial(func, ...boundArgs) {
-    return function(...args) {
+    return (...args) => {
         let argIndex = 0;
         const newArgs = boundArgs
             .map(arg => arg === PLACEHOLDER ? args[argIndex++] : arg)
