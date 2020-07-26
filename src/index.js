@@ -4,7 +4,7 @@ const PLACEHOLDER = `${REDUX_ACTION_SELECTOR}/placeholder`;
 
 export const getPlaceholder = () => PLACEHOLDER;
 
-export function ReduxActionSelectorMiddleware(store) {
+export function reduxActionSelectorMiddleware(store) {
     return next => action => {
         const {type, payload, meta} = action;
 		
@@ -16,7 +16,7 @@ export function ReduxActionSelectorMiddleware(store) {
             const actionCreator = partial(payload, ...computedSelectors);
             store.dispatch(actionCreator(...args));
         } else {
-            next(action);
+            return next(action);
         }
     }
 }
@@ -46,7 +46,7 @@ function partial(func, ...boundArgs) {
         const newArgs = boundArgs
             .map(arg => arg === PLACEHOLDER ? args[argIndex++] : arg)
             .concat(args.slice(argIndex));
-        func(...newArgs);
+        return func(...newArgs);
     }
 }
 
