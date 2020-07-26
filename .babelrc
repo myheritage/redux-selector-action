@@ -1,0 +1,21 @@
+{
+    "presets": ["@babel/preset-env", {"exclude": ["@babel/plugin-transform-typeof-symbol", "transform-regenerator"]}],
+    "env": {
+        "commonjs": {
+            "plugins": [
+                ["@babel/plugin-transform-modules-commonjs", { "loose": true }]
+            ]
+        },
+        "umd": {
+            "plugins": [
+                ["babel-plugin-transform-es2015-modules-umd", { "loose": true }]
+            ],
+            "moduleId": "ReduxActionSelector"
+        },
+        "test": {
+            "plugins": [
+                ["@babel/plugin-transform-modules-commonjs", { "loose": true }]
+            ]
+        }
+    }
+}

@@ -1,5 +1,7 @@
 node_modules
 lib
+dist
+es
 coverage
 .vscode
 .idea

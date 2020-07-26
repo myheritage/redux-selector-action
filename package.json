@@ -2,9 +2,46 @@
   "name": "redux-action-selector",
   "version": "1.0.0",
   "description": "Action selectors for Redux.",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "jsnext:main": "es/index.js",
+  "module": "es/index.js",
   "scripts": {
-    "test": "test"
+    "compile": "npm run compile:cjs && npm run compile:umd && npm run compile:umdmin && npm run compile:es",
+    "compile:cjs": "better-npm-run compile:cjs",
+    "compile:es": "babel -d es/ src/",
+    "compile:umd": "better-npm-run compile:umd",
+    "compile:umdmin": "uglifyjs dist/redux-action-selector.js -m -o dist/redux-action-selector.min.js",
+    "lint": "eslint src/ test/",
+    "lint:fix": "eslint src/ test/ --fix",
+    "prepublish": "npm run compile",
+    "test": "better-npm-run test",
+    "test:cov": "better-npm-run test:cov"
+  },
+  "betterScripts": {
+    "compile:cjs": {
+      "command": "babel src/ --out-dir lib/",
+      "env": {
+        "NODE_ENV": "commonjs"
+      }
+    },
+    "compile:umd": {
+      "command": "mkdirp dist/ && babel -o dist/redux-action-selector.js src/",
+      "env": {
+        "NODE_ENV": "umd"
+      }
+    },
+    "test": {
+      "command": "jest -u test/",
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
+    "test:cov": {
+      "command": "jest test/ --coverage",
+      "env": {
+        "NODE_ENV": "test"
+      }
+    }
   },
   "repository": {
     "type": "git",
@@ -22,5 +59,16 @@
   "bugs": {
     "url": "https://github.com/myheritage/redux-action-selector/issues"
   },
-  "homepage": "https://github.com/myheritage/redux-action-selector#readme"
+  "homepage": "https://github.com/myheritage/redux-action-selector#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+    "better-npm-run": "^0.1.1",
+    "eslint": "^7.5.0",
+    "eslint-plugin-jest": "^23.18.2",
+    "jest": "^26.1.0",
+    "uglify-js": "^3.10.0"
+  }
 }
