@@ -1,9 +1,21 @@
-
 const REDUX_ACTION_SELECTOR = '@@redux_action_selector';
 const PLACEHOLDER = `${REDUX_ACTION_SELECTOR}/placeholder`;
 
+/**
+ * A selector function which returns the "placeholder" constant
+ * @returns {string} "placeholder" value
+ */
 export const getPlaceholder = () => PLACEHOLDER;
 
+/**
+ * A middlware which handles any action from type "redux-action-selector" in order to inject the store selectors output,
+ * to the given action creator inside the handled action payload.
+ * Afterwards, the middleware dispatch the new action with its injected args without passing them, but to calculate them against the store.
+ * Otherwise calls next middleware and return its output.
+ *
+ * @param {object} store - The redux store API
+ * @returns {function} - A callback which is called with the next middleware
+ */
 export function reduxActionSelectorMiddleware(store) {
     return next => action => {
         const {type, payload, meta} = action;
@@ -21,6 +33,24 @@ export function reduxActionSelectorMiddleware(store) {
     }
 }
 
+/**
+ * Accepts an action creator and selectors which we want to inject as dependencies of the action creator.
+ * A dependency can be a selector function, which its output will be passed or any other value.
+ * Supports the following formats:
+ * 1. createActionSelector(dep1, dep2, ..., actionCreator)
+ * 2. createActionSelector([dep1, dep2, ...], actionCreator)
+ * Returns a new action creator which we can dispatch with redux store.dispatch.
+ * The new action creator can be tested using its new props resultFunc, dependencies.
+ * resultFunc = the given action creator function
+ * dependencies = the given selectors as an array
+ *
+ * We can use a special selector as a dependency, called getPlaceholder, for supporting args of the returned action creator.
+ * Each getPlaceholder saves the argument position for another outer argument.
+ * Once we dispatch the new action, its args will fill all the placeholders by their position order.
+ *
+ * @param  {function[]} funcs - selectors and action creator
+ * @returns {function} action selector
+ */
 export function createActionSelector(...funcs) {
     const actionCreator = funcs.pop();
     const selectors = Array.isArray(funcs[0]) ? funcs[0] : funcs;
@@ -40,6 +70,16 @@ export function createActionSelector(...funcs) {
     return actionSelector;
 }
 
+/**
+ * Returns new function which is partially applied.
+ * Meaning part of the args will be bound to the function and the function won't accept them anymore, in order to reduce its arguments.
+ * In case we get a bound arg which is the "placeholder", we inject to the new function one of the args which where applied,
+ * instead of the placeholder, by their position.
+ *
+ * @param {function} func - Function to bind its args
+ * @param {array} boundArgs - The arguments we want to bind to the given function
+ * @returns {function} - Bound function
+ */
 function partial(func, ...boundArgs) {
     return function(...args) {
         let argIndex = 0;
@@ -50,10 +90,23 @@ function partial(func, ...boundArgs) {
     }
 }
 
+/**
+ * Returns whether the given arg is a function.
+ *
+ * @param {*} func - A potential function
+ * @returns {boolean} - Whether is function
+ */
 function isFunction(func) {
     return typeof func === 'function';
 }
 
+/**
+ * Throws an error if the given arg is not a function, otherwise continue.
+ *
+ * @param {function} func - The function to verify
+ * @returns {undefined}
+ * @throws TypeError
+ */
 function throwIfNotFunction(func) {
     if (!isFunction(func)) {
         throw new TypeError('Action selectors should be based on action creator of type function, ' +
