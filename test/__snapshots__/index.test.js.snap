@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`redux action selector createActionSelector should return action selector with array of dependencies 1`] = `
+Object {
+  "meta": Object {
+    "args": Array [
+      "myArg",
+    ],
+    "selectors": Array [
+      [Function],
+      [Function],
+    ],
+  },
+  "payload": [MockFunction],
+  "type": "@@redux_action_selector",
+}
+`;
+
+exports[`redux action selector createActionSelector should return action selector with dependencies as args 1`] = `
+Object {
+  "meta": Object {
+    "args": Array [
+      "myArg",
+    ],
+    "selectors": Array [
+      [Function],
+      [Function],
+    ],
+  },
+  "payload": [MockFunction],
+  "type": "@@redux_action_selector",
+}
+`;
+
+exports[`redux action selector createActionSelector should return action selectors without dependencies 1`] = `
+Object {
+  "meta": Object {
+    "args": Array [
+      "myArg",
+    ],
+    "selectors": Array [],
+  },
+  "payload": [MockFunction],
+  "type": "@@redux_action_selector",
+}
+`;
+
+exports[`redux action selector createActionSelector should throw error for invalid resultFunc 1`] = `"Action selectors should be based on action creator of type function, instead received the following type: [undefined]"`;
+
+exports[`redux action selector getPlaceholder should match placeholder snp 1`] = `"@@redux_action_selector/placeholder"`;
+
+exports[`redux action selector reduxActionSelectorMiddleware should inject args to placeholders by position order 1`] = `
+Array [
+  Array [
+    "dep1",
+    "arg1",
+    "const1",
+    "dep2",
+    "arg2",
+    "dep3",
+    "const2",
+    "arg3",
+    "arg4",
+  ],
+]
+`;
+
+exports[`redux action selector reduxActionSelectorMiddleware should inject selectors output and non-function values to the given action creator 1`] = `
+Array [
+  Array [
+    "dep1",
+    "constant",
+    undefined,
+  ],
+]
+`;
+
+exports[`redux action selector reduxActionSelectorMiddleware should throw error for invalid payload type 1`] = `"Action selectors should be based on action creator of type function, instead received the following type: [undefined]"`;
