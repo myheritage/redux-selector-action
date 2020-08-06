@@ -2,16 +2,18 @@ const REDUX_ACTION_SELECTOR = '@@redux_action_selector';
 const PLACEHOLDER = `${REDUX_ACTION_SELECTOR}/placeholder`;
 
 /**
- * A selector function which returns the "placeholder" constant
+ * A selector function which returns the "placeholder" constant.
+ * This function is a special selector, once used as a dependency of an action creator's argument, the position of that dependency will be saved.
+ * It will be filled by its position, once the action selector is called with arguments.
  *
  * @returns {string} "placeholder" value
  */
 export const getPlaceholder = () => PLACEHOLDER;
 
 /**
- * A middleware which handles any action from type "redux-action-selector" in order to inject the store selectors output,
- * to the given action creator inside the handled action payload.
- * Afterwards, the middleware dispatch the new action with its injected args without passing them, but to calculate them against the store.
+ * A middleware which handles the in-package action.
+ * That action contains, inside the payload part, an inner action creator, which will be dispatched with its given args,
+ * after injecting selectors' output that are calculated against the store.
  * Otherwise calls next middleware and return its output.
  *
  * @param {object} store - The redux store API
@@ -44,10 +46,6 @@ export function reduxActionSelectorMiddleware(store) {
  * The new action creator can be tested using its new props resultFunc, dependencies.
  * resultFunc = the given action creator function
  * dependencies = the given selectors as an array
- *
- * We can use a special selector as a dependency, called getPlaceholder, for supporting args of the returned action creator.
- * Each getPlaceholder saves the argument position for another outer argument.
- * Once we dispatch the new action, its args will fill all the placeholders by their position order.
  *
  * @param  {...function} funcs - selectors and action creator
  * @returns {function} action selector
