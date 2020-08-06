@@ -54,7 +54,13 @@
     "action",
     "selector"
   ],
-  "author": "Peri Levy",
+  "author": "MyHeritage",
+  "contributors": [
+    {
+      "name": "Peri Levy",
+      "email": "perilevy@gmail.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/myheritage/redux-action-selector/issues"
