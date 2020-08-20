@@ -101,7 +101,7 @@
             4
         ],
         "indent-legacy": "off",
-        "init-declarations": "error",
+        "init-declarations": "off",
         "jsx-quotes": "error",
         "key-spacing": "error",
         "keyword-spacing": [
@@ -168,7 +168,7 @@
         "no-lonely-if": "error",
         "no-loop-func": "error",
         "no-loss-of-precision": "error",
-        "no-mixed-operators": "error",
+        "no-mixed-operators": "off",
         "no-mixed-requires": "error",
         "no-multi-assign": "error",
         "no-multi-spaces": "error",
@@ -215,7 +215,7 @@
         "no-ternary": "off",
         "no-throw-literal": "error",
         "no-undef-init": "error",
-        "no-undefined": "error",
+        "no-undefined": "off",
         "no-underscore-dangle": "error",
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "error",
@@ -239,7 +239,7 @@
             "error",
             "never"
         ],
-        "object-property-newline": "error",
+        "object-property-newline": ["error", { "allowAllPropertiesOnSameLine": true }],
         "object-shorthand": "error",
         "one-var": "off",
         "one-var-declaration-per-line": "error",

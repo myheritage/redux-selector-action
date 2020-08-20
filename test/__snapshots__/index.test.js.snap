@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`redux action selector createActionSelector should return action selector with array of dependencies 1`] = `
+exports[`redux selector action createSelectorAction should return selector action with array of dependencies 1`] = `
 Object {
   "meta": Object {
     "args": Array [
@@ -12,11 +12,11 @@ Object {
     ],
   },
   "payload": [MockFunction],
-  "type": "@@redux_action_selector",
+  "type": "@@redux_selector_action",
 }
 `;
 
-exports[`redux action selector createActionSelector should return action selector with dependencies as args 1`] = `
+exports[`redux selector action createSelectorAction should return selector action with dependencies as args 1`] = `
 Object {
   "meta": Object {
     "args": Array [
@@ -28,11 +28,11 @@ Object {
     ],
   },
   "payload": [MockFunction],
-  "type": "@@redux_action_selector",
+  "type": "@@redux_selector_action",
 }
 `;
 
-exports[`redux action selector createActionSelector should return action selectors without dependencies 1`] = `
+exports[`redux selector action createSelectorAction should return selector actions without dependencies 1`] = `
 Object {
   "meta": Object {
     "args": Array [
@@ -41,15 +41,33 @@ Object {
     "selectors": Array [],
   },
   "payload": [MockFunction],
-  "type": "@@redux_action_selector",
+  "type": "@@redux_selector_action",
 }
 `;
 
-exports[`redux action selector createActionSelector should throw error for invalid resultFunc 1`] = `"Action selectors should be based on action creator of type function, instead received the following type: [undefined]"`;
+exports[`redux selector action createSelectorAction should throw error for invalid resultFunc 1`] = `"Selector actions should be based on action creator of type function, instead received the following type: [undefined]"`;
 
-exports[`redux action selector getPlaceholder should match placeholder snp 1`] = `"@@redux_action_selector/placeholder"`;
+exports[`redux selector action getPlaceholder should match placeholder object empty 1`] = `
+Object {
+  "placeholder": "@@redux_selector_action/placeholder",
+  "selectorObj": undefined,
+}
+`;
 
-exports[`redux action selector reduxActionSelectorMiddleware should inject args to placeholders by position order 1`] = `
+exports[`redux selector action getPlaceholder should match placeholder object with selector object 1`] = `
+Object {
+  "placeholder": "@@redux_selector_action/placeholder",
+  "selectorObj": Object {
+    "dep": [Function],
+  },
+}
+`;
+
+exports[`redux selector action getPlaceholder should throw error for invalid selectorObj 1`] = `"Placeholder for object arg should be of type object and not null, instead received the following type: [string]"`;
+
+exports[`redux selector action getPlaceholder should throw error for nullable selectorObj 1`] = `"Placeholder for object arg should be of type object and not null, instead received the following type: [object]"`;
+
+exports[`redux selector action reduxSelectorActionMiddleware should inject args to placeholders by position order 1`] = `
 Array [
   Array [
     "dep1",
@@ -65,7 +83,31 @@ Array [
 ]
 `;
 
-exports[`redux action selector reduxActionSelectorMiddleware should inject selectors output and non-function values to the given action creator 1`] = `
+exports[`redux selector action reduxSelectorActionMiddleware should inject object to placeholders by position order 1`] = `
+Array [
+  Array [
+    "dep1",
+    Object {
+      "prop1": "prop1Value",
+      "prop2": "myProp2Value",
+      "prop3": "myProp3Value",
+    },
+    "const1",
+    "dep2",
+    Object {
+      "otherProp1": "otherProp1Value",
+      "otherProp2": "myOtherProp2Value",
+      "otherProp3": "myOtherProp3Value",
+    },
+    "dep3",
+    "const2",
+    "arg3",
+    "arg4",
+  ],
+]
+`;
+
+exports[`redux selector action reduxSelectorActionMiddleware should inject selectors output and non-function values to the given action creator 1`] = `
 Array [
   Array [
     "dep1",
@@ -75,4 +117,4 @@ Array [
 ]
 `;
 
-exports[`redux action selector reduxActionSelectorMiddleware should throw error for invalid payload type 1`] = `"Action selectors should be based on action creator of type function, instead received the following type: [undefined]"`;
+exports[`redux selector action reduxSelectorActionMiddleware should throw error for invalid payload type 1`] = `"Selector actions should be based on action creator of type function, instead received the following type: [undefined]"`;
