@@ -1,4 +1,4 @@
-# Redux Action Selector
+# Redux Selector Action
 [![npm package][npm-badge]][npm]
 
 Same Redux "selectors" but for actions, inspired by [reselect](https://github.com/reduxjs/reselect).
