@@ -137,7 +137,7 @@ This is a built-in selector, which you can use as part of your action creator's 
 Once you pass it as a dependency, instead of injecting the output of this selector, 
 we save its position in the dependency list (selectors) for an arg, which will be sent once you call the action selector.
 
-In case you have a action creator with an "options" argument (meaning an object which maps arg names to their values),
+In case you have an action creator with an "options" argument (meaning an object which maps arg names to their values),
 you can use the following syntax:
 
 ```js
