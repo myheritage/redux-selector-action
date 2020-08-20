@@ -1,7 +1,7 @@
 {
-  "name": "redux-action-selector",
+  "name": "redux-selector-action",
   "version": "1.0.0",
-  "description": "Action selectors for Redux.",
+  "description": "Selector Actions for Redux.",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
   "module": "es/index.js",
@@ -10,7 +10,7 @@
     "compile:cjs": "better-npm-run compile:cjs",
     "compile:es": "babel -d es/ src/",
     "compile:umd": "better-npm-run compile:umd",
-    "compile:umdmin": "uglifyjs dist/redux-action-selector.js -m -o dist/redux-action-selector.min.js",
+    "compile:umdmin": "uglifyjs dist/redux-selector-action.js -m -o dist/redux-selector-action.min.js",
     "lint": "eslint src/ test/",
     "lint:fix": "eslint src/ test/ --fix",
     "prepublish": "npm run compile",
@@ -25,7 +25,7 @@
       }
     },
     "compile:umd": {
-      "command": "mkdirp dist/ && babel -o dist/redux-action-selector.js src/",
+      "command": "mkdirp dist/ && babel -o dist/redux-selector-action.js src/",
       "env": {
         "NODE_ENV": "umd"
       }
@@ -45,7 +45,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/myheritage/redux-action-selector.git"
+    "url": "git+https://github.com/myheritage/redux-selector-action.git"
   },
   "keywords": [
     "react",
@@ -63,9 +63,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/myheritage/redux-action-selector/issues"
+    "url": "https://github.com/myheritage/redux-selector-action/issues"
   },
-  "homepage": "https://github.com/myheritage/redux-action-selector#readme",
+  "homepage": "https://github.com/myheritage/redux-selector-action#readme",
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/plugin-transform-modules-commonjs": "^7.10.4",

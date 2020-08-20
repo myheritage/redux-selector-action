@@ -1,57 +1,72 @@
-import {createActionSelector, getPlaceholder, reduxActionSelectorMiddleware} from '../src';
+import {createSelectorAction, getPlaceholder, reduxSelectorActionMiddleware} from '../src';
 
-describe('redux action selector', () => {
+describe('redux selector action', () => {
     describe('getPlaceholder', () => {
-        it('should match placeholder snp', () => {
+        it('should return placeholder object', () => {
+            expect(typeof getPlaceholder()).toBe('object');
+        });
+
+        it('should match placeholder object empty', () => {
             expect(getPlaceholder()).toMatchSnapshot();
-        })
+        });
+
+        it('should throw error for invalid selectorObj', () => {
+            expect(() => getPlaceholder('wrong type')).toThrowErrorMatchingSnapshot();
+        });
+
+        it('should throw error for nullable selectorObj', () => {
+            expect(() => getPlaceholder(null)).toThrowErrorMatchingSnapshot();
+        });
+
+        it('should match placeholder object with selector object', () => {
+            expect(getPlaceholder({dep: () => 'myDep'})).toMatchSnapshot();
+        });
     });
 
-    describe('createActionSelector', () => {
+    describe('createSelectorAction', () => {
         it('should throw error for invalid resultFunc', () => {
-            expect(createActionSelector).toThrowErrorMatchingSnapshot();
+            expect(createSelectorAction).toThrowErrorMatchingSnapshot();
         });
 
-        it('should return action selectors without dependencies', () => {
-            const actionSelector = createActionSelector(jest.fn());
-            expect(actionSelector.resultFunc).toBeDefined();
-            expect(actionSelector.dependencies).toHaveLength(0);
-            expect(actionSelector('myArg')).toMatchSnapshot();
+        it('should return selector actions without dependencies', () => {
+            const selectorAction = createSelectorAction(jest.fn());
+            expect(selectorAction.resultFunc).toBeDefined();
+            expect(selectorAction.dependencies).toHaveLength(0);
+            expect(selectorAction('myArg')).toMatchSnapshot();
         });
 
-        it('should return action selector with dependencies as args', () => {
-            const actionSelector = createActionSelector(() => 'myDep1', () => 'myDep2', jest.fn());
-            expect(actionSelector.resultFunc).toBeDefined();
-            expect(actionSelector.dependencies).toHaveLength(2);
-            expect(actionSelector('myArg')).toMatchSnapshot();
+        it('should return selector action with dependencies as args', () => {
+            const selectorAction = createSelectorAction(() => 'myDep1', () => 'myDep2', jest.fn());
+            expect(selectorAction.resultFunc).toBeDefined();
+            expect(selectorAction.dependencies).toHaveLength(2);
+            expect(selectorAction('myArg')).toMatchSnapshot();
         });
 
-        it('should return action selector with array of dependencies', () => {
-            const actionSelector = createActionSelector([
+        it('should return selector action with array of dependencies', () => {
+            const selectorAction = createSelectorAction([
                 () => 'myDep1',
                 () => 'myDep2',
             ], jest.fn());
-            expect(actionSelector.resultFunc).toBeDefined();
-            expect(actionSelector.dependencies).toHaveLength(2);
-            expect(actionSelector('myArg')).toMatchSnapshot();
+            expect(selectorAction.resultFunc).toBeDefined();
+            expect(selectorAction.dependencies).toHaveLength(2);
+            expect(selectorAction('myArg')).toMatchSnapshot();
         });
     });
 
-    describe('reduxActionSelectorMiddleware', () => {
-        let actionCreator, actionSelector, dispatch, getState, handleAction, next;
+    describe('reduxSelectorActionMiddleware', () => {
+        let actionCreator, dispatch, getState, handleAction, next, selectorAction;
 
         beforeEach(() => {
             dispatch = jest.fn();
             getState = jest.fn();
             next = jest.fn();
-            handleAction = reduxActionSelectorMiddleware({dispatch,
-                getState})(next);
+            handleAction = reduxSelectorActionMiddleware({getState, dispatch})(next);
             actionCreator = jest.fn((...args) => ({
                 type: 'dummy_action',
                 args,
             }));
-            actionSelector = {
-                type: '@@redux_action_selector',
+            selectorAction = {
+                type: '@@redux_selector_action',
                 payload: actionCreator,
                 meta: {
                     selectors: [],
@@ -61,51 +76,72 @@ describe('redux action selector', () => {
         });
 
         it('should call next for unknown action', () => {
-            actionSelector.type = 'unknown';
+            selectorAction.type = 'unknown';
             const nextReturnValue = true;
             next.mockReturnValue(nextReturnValue);
-            const result = handleAction(actionSelector);
-            expect(next).toHaveBeenCalledWith(actionSelector);
+            const result = handleAction(selectorAction);
+            expect(next).toHaveBeenCalledWith(selectorAction);
             expect(result).toBe(nextReturnValue);
         });
 
         it('should throw error for invalid payload type', () => {
-            actionSelector.payload = undefined;
-            expect(() => handleAction(actionSelector)).toThrowErrorMatchingSnapshot();
+            selectorAction.payload = undefined;
+            expect(() => handleAction(selectorAction)).toThrowErrorMatchingSnapshot();
             expect(actionCreator).not.toHaveBeenCalled();
             expect(dispatch).not.toHaveBeenCalled();
         });
 
-        it('should dispatch action selector without selectors and args', () => {
-            handleAction(actionSelector);
+        it('should dispatch selector action without selectors and args', () => {
+            handleAction(selectorAction);
             expect(actionCreator).toHaveBeenCalled();
             expect(dispatch).toHaveBeenCalled();
             expect(actionCreator.mock.calls[0]).toHaveLength(0);
         });
 
         it('should inject selectors output and non-function values to the given action creator', () => {
-            actionSelector.meta.selectors.push(
+            selectorAction.meta.selectors.push(
                 () => 'dep1',
                 'constant',
                 getPlaceholder,
             );
-            handleAction(actionSelector);
+            handleAction(selectorAction);
             expect(dispatch).toHaveBeenCalled();
             expect(actionCreator.mock.calls).toMatchSnapshot();
         });
 
         it('should inject args to placeholders by position order', () => {
-            actionSelector.meta.selectors.push(
+            selectorAction.meta.selectors.push(
                 () => 'dep1',
                 getPlaceholder,
                 'const1',
                 () => 'dep2',
-                getPlaceholder,
+                getPlaceholder(),
                 () => 'dep3',
                 'const2',
             );
-            actionSelector.meta.args.push('arg1', 'arg2', 'arg3', 'arg4');
-            handleAction(actionSelector);
+            selectorAction.meta.args.push('arg1', 'arg2', 'arg3', 'arg4');
+            handleAction(selectorAction);
+            expect(dispatch).toHaveBeenCalled();
+            expect(actionCreator.mock.calls).toMatchSnapshot();
+        });
+
+        it('should inject object to placeholders by position order', () => {
+            selectorAction.meta.selectors.push(
+                () => 'dep1',
+                getPlaceholder({prop1: () => 'prop1Value'}),
+                'const1',
+                () => 'dep2',
+                getPlaceholder({otherProp1: () => 'otherProp1Value'}),
+                () => 'dep3',
+                'const2',
+            );
+            selectorAction.meta.args.push(
+                {prop3: 'myProp3Value', prop2: 'myProp2Value'},
+                {otherProp3: 'myOtherProp3Value', otherProp2: 'myOtherProp2Value'},
+                'arg3',
+                'arg4',
+            );
+            handleAction(selectorAction);
             expect(dispatch).toHaveBeenCalled();
             expect(actionCreator.mock.calls).toMatchSnapshot();
         });
