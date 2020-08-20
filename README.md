@@ -12,14 +12,14 @@ A selector-action creator accepts a list of selectors and a regular action creat
 **container/actions.js**
 
 ```js
-import { createActionSelector, getPlaceholder } from 'redux-selector-action';
+import { createSelectorAction, getPlaceholder } from 'redux-selector-action';
 
 const getCsrfToken = state => state.csrfToken;
 const getCurrency = state => state.currency;
 const getLang = state => state.lang;
 
 
-export const fetchOrder = createActionSelector(
+export const fetchOrder = createSelectorAction(
   getCsrfToken,
   getPlaceholder, // placeholder for order id
   getCurrency,
@@ -72,7 +72,7 @@ store.dispatch(fetchOrder(123));
 - [Motivation for Selector Actions](#motivation-for-selector-actions)
 - [API](#api)
   - [`getPlaceholder`](#getplaceholder)
-  - [`createActionSelector`](#createactionselectorselectors--selectors-resultfunc)
+  - [`createSelectorAction`](#createactionselectorselectors--selectors-resultfunc)
   - [`reduxSelectorActionMiddleware`](#reduxselectoractionmiddleware)
 - [FAQ](#faq)
   - [Can I use this package without Redux?](#q-can-i-use-this-package-without-redux)
@@ -109,21 +109,21 @@ Let's fix this.
 
 ## API
 
-### createActionSelector(...selectors | [...selectors], resultFunc)
+### createSelectorAction(...selectors | [...selectors], resultFunc)
 
 This function accept a list of selectors, or an array of selectors, computes their output against the store's state, and inject them as arguments to the given `resultFunc`.
 
 [`getPlaceholder`](#getplaceholder) selector will be handled separately.
 
 ```js
-import { createActionSelector, getPlaceholder } from 'redux-selector-action';
+import { createSelectorAction, getPlaceholder } from 'redux-selector-action';
 import {updateOrderCurrencyAction} from './actions';
 
 const getCsrfToken = state => state.csrfToken;
 const getOrderId = state => state.orderId;
 
 // We accept array of selectors too! choose your preferred way.
-export const updateOrderCurrency = createActionSelector(
+export const updateOrderCurrency = createSelectorAction(
   [getCsrfToken, getOrderId, getPlaceholder /* currency */],
   updateOrderCurrencyAction,
 );
@@ -135,16 +135,16 @@ updateOrderCurrency('USD');
 ### getPlaceholder()
 This is a built-in selector, which you can use as part of your action creator's selectors.
 Once you pass it as a dependency, instead of injecting the output of this selector, 
-we save its position in the dependency list (selectors) for an arg, which will be sent once you call the action selector.
+we save its position in the dependency list (selectors) for an arg, which will be sent once you call the selector action.
 
 In case you have an action creator with an "options" argument (meaning an object which maps arg names to their values),
 you can use the following syntax:
 
 ```js
-import { createActionSelector, getPlaceholder } from 'redux-selector-action';
+import { createSelectorAction, getPlaceholder } from 'redux-selector-action';
 import { getCsrfToken, getCurrency, getLang } from './selectors';
 
-export const fetchOrder = createActionSelector(
+export const fetchOrder = createSelectorAction(
   // Map the arg names to selectors, then your action creator will get their values:
   getPlaceholder({
     token: getCsrfToken, 
@@ -193,22 +193,22 @@ A: Yes. This package has no dependency on Reselect, you can work with any select
 
 ### Q: My action accepts many args that can't be injected, should I pass many getPlaceholders?
 
-A: Not necessarily. All args you pass to the created action selector will be injected to the placeholders.
+A: Not necessarily. All args you pass to the created selector action will be injected to the placeholders.
 But if you pass more args than placeholders, then they will be appended too.
 
 
 ### Q: How can I test a selector action?
 
-Every action selector keeps a reference to the given selectors and the action creator, as `.dependencies` and `.resultFunc` respectively.
+Every selector action keeps a reference to the given selectors and the action creator, as `.dependencies` and `.resultFunc` respectively.
 
-For example if you have the following action selector:
+For example if you have the following selector action:
 
-**src/actionSelectors.js**
+**src/selectorActions.js**
 ```js
 export const getFirst = state => 1;
 export const getSecond = state => 2;
 
-export const myActionSelector = createActionSelector(
+export const mySelectorAction = createSelectorAction(
   getFirst,
   getSecond,
   getPlaceholder,
@@ -218,18 +218,20 @@ export const myActionSelector = createActionSelector(
 
 You can test it this way:
 
-**test/actionSelectors.js**
+**test/selectorActions.js**
 
 ```js
+import { mySelectorAction } from '../src/selectorActions';
+
 // test the selectors themselves...
 test("getFirst", () => { /* ... */ });
 test("getSecond", () => { /* ... */ });
 
-test("myActionSelector", () => {
+test("mySelectorAction", () => {
   // check the dependencies are as expected
-  assert(myActionSelector.dependencies).toEqual([getFirst, getSecond, getPlaceholder]);
+  assert(mySelectorAction.dependencies).toEqual([getFirst, getSecond, getPlaceholder]);
   // check the resultFunc output is as expected
-  assert(myActionSelector.resultFunc(1, 2, 3)).toMatchSnapshot();
+  assert(mySelectorAction.resultFunc(1, 2, 3)).toMatchSnapshot();
 })
 ```
 
