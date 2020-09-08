@@ -145,5 +145,12 @@ describe('redux selector action', () => {
             expect(dispatch).toHaveBeenCalled();
             expect(actionCreator.mock.calls).toMatchSnapshot();
         });
+
+        it('should inject object to placeholders without extending the object', () => {
+            selectorAction.meta.selectors.push(getPlaceholder({prop1: () => 'prop1Value'}));
+            handleAction(selectorAction);
+            expect(dispatch).toHaveBeenCalled();
+            expect(actionCreator.mock.calls).toMatchSnapshot();
+        });
     });
 });

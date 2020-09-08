@@ -106,7 +106,7 @@ function partial(func, ...boundArgs) {
         const newArgs = boundArgs
             .map(arg => {
                 let calculatedArg = arg;
-                if (isExtendableSelector(arg) && isNotNullObject(args[argIndex])) {
+                if (isExtendableSelector(arg)) {
                     calculatedArg = {...arg.selectorObj, ...args[argIndex++]};
                 } else if (isPlaceholder(arg)) {
                     calculatedArg = args[argIndex++];
