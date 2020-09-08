@@ -107,6 +107,16 @@ Array [
 ]
 `;
 
+exports[`redux selector action reduxSelectorActionMiddleware should inject object to placeholders without extending the object 1`] = `
+Array [
+  Array [
+    Object {
+      "prop1": "prop1Value",
+    },
+  ],
+]
+`;
+
 exports[`redux selector action reduxSelectorActionMiddleware should inject selectors output and non-function values to the given action creator 1`] = `
 Array [
   Array [
